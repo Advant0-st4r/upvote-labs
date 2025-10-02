@@ -1,61 +1,30 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+// src/App.tsx
+import React from 'react';
 import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react';
-import { useUser } from '@clerk/clerk-react';
-import Landing from './pages/Landing';
+import { supabase } from './lib/supabaseClient';
 import Discovery from './pages/Discovery';
-import { useEffect } from 'react';
-import { initAnalytics } from './lib/analytics';
 
-const clerkFrontendApi = import.meta.env.VITE_CLERK_FRONTEND_API || '';
+// Read Clerk frontend API from env
+const clerkFrontendApi = import.meta.env.VITE_CLERK_FRONTEND_API as string;
 
-function App() {
+if (!clerkFrontendApi) {
+  console.warn('VITE_CLERK_FRONTEND_API is missing in .env.local');
+}
+
+const App: React.FC = () => {
   return (
-    <ClerkProvider
-      frontendApi={clerkFrontendApi}
-      navigate={(to) => window.history.pushState(null, '', to)}
-    >
-      <Router>
-        <Routes>
-          {/* Landing page (only for logged-out users) */}
-          <Route
-            path="/"
-            element={
-              <SignedOut>
-                <Landing />
-              </SignedOut>
-            }
-          />
+    <ClerkProvider frontendApi={clerkFrontendApi} navigate={(to) => (window.location.href = to)}>
+      {/* Only signed-in users can access Discovery */}
+      <SignedIn>
+        <Discovery supabase={supabase} />
+      </SignedIn>
 
-          {/* Discovery (only for signed-in users) */}
-          <Route
-            path="/discovery"
-            element={
-              <SignedIn>
-                <AnalyticsWrapper>
-                  <Discovery />
-                </AnalyticsWrapper>
-              </SignedIn>
-            }
-          />
-
-          {/* Fallback redirect */}
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </Router>
+      {/* Redirect signed-out users to sign-in */}
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
     </ClerkProvider>
   );
-}
-
-function AnalyticsWrapper({ children }: { children: React.ReactNode }) {
-  const { user } = useUser();
-
-  useEffect(() => {
-    if (user) {
-      initAnalytics(user.id, user.emailAddresses[0].emailAddress);
-    }
-  }, [user]);
-
-  return <>{children}</>;
-}
+};
 
 export default App;
