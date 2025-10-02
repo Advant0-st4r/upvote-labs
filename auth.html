@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Auth</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+    <h1>Supabase Authentication</h1>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="login">Login</button>
+    <script>
+        const supabaseUrl = 'https://ujraisrqygavaycpictv.supabase.co'; // Replace with your Supabase URL
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqcmFpc3JxeWdhdmF5Y3BpY3R2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg5MDc5NzEsImV4cCI6MjA3NDQ4Mzk3MX0.0uTs_i4TgwMJaPNgk_tvOTUtw4MnmCw-xcTibC7gk14'; // Replace with your Supabase Anon Key
+        const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        document.getElementById('login').onclick = async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const { user, session, error } = await supabase.auth.signIn({
+                email,
+                password,
+            });
+
+            if (error) {
+                console.error('Error logging in:', error.message);
+            } else {
+                console.log('Logged in user:', user);
+                console.log('Access Token:', session.access_token); // This is your access token
+            }
+        };
+    </script>
+</body>
+</html>
