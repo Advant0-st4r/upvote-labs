@@ -1,3 +1,4 @@
+// src/pages/Discovery.tsx
 import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { supabase } from '../lib/supabaseClient';
@@ -113,10 +114,8 @@ export default function Discovery() {
         await supabase.from('project_mappings').insert([{ project_id: data.id, problem_id: selectedProblem.id }]);
       }
 
-      // Gamification: Stage Created
       await addProgress(user.id, data.id, 'Created', 5);
 
-      // Badge example
       if (projects.length + 1 === 5) await awardBadge(user.id, 'exporter-badge-uuid');
 
       setNewProjectTitle('');
@@ -131,7 +130,6 @@ export default function Discovery() {
     const title = newProjectTitle || selectedProblem?.title || 'project';
     await exportProject(title, mvpSuggestions, guidanceSteps);
 
-    // Gamification: Stage Exported
     const lastProject = projects[0];
     if (lastProject && user) await addProgress(user.id, lastProject.id, 'Exported', 15);
 
@@ -260,4 +258,3 @@ async function calculateFitScore(problem: Problem, userProjects: Project[], user
 
   return baseScore;
 }
-
