@@ -1,32 +1,24 @@
-// src/pages/Landing.tsx
-import { Component } from 'solid-js';
-import { useNavigate } from '@solidjs/router';
-import Button from '../components/ui/Button';
+import { useNavigate } from "@solidjs/router";
 
-const Landing: Component = () => {
-  const nav = useNavigate();
+export default function Landing() {
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    navigate("/discovery");
+  };
 
   return (
-    <main class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-white p-8">
-      <section class="max-w-4xl w-full bg-white rounded-2xl shadow px-8 py-12">
-        <h1 class="text-4xl font-extrabold mb-4">Welcome to UpvoteLabs</h1>
-        <p class="text-lg text-slate-600 mb-6">
-          Discover high-value problems from communities, instantly preview MVPs, and launch projects — fast.
-        </p>
-
-        <div class="flex gap-4">
-          <Button onClick={() => nav('/discovery')}>Get Started</Button>
-          <Button variant="outline" onClick={() => nav('/about')}>Learn More</Button>
-        </div>
-
-        <div class="mt-8 text-sm text-slate-500">
-          <p>
-            Built for quick iteration — sign up, browse vetted problems, generate an MVP preview, export and ship.
-          </p>
-        </div>
-      </section>
-    </main>
+    <div class="landing-page flex flex-col items-center justify-center min-h-screen bg-gray-50">
+      <h1 class="text-4xl font-bold mb-6">Welcome to UpvoteLabs</h1>
+      <p class="text-lg mb-4 text-center max-w-md">
+        Discover high-value problems and instantly map out actionable projects.
+      </p>
+      <button
+        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        onClick={handleGetStarted}
+      >
+        Get Started
+      </button>
+    </div>
   );
-};
-
-export default Landing;
+}
